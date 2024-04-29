@@ -16,16 +16,15 @@
       "@screens/*": [
         "./src/screens/*"
       ],
-      "@screens/*": [
-        "./src/screens/*"
+      "@storage/*": [
+        "./src/storage/*"
       ],
-      "@screens/*": [
-        "./src/screens/*"
+      "@theme/*": [
+        "./src/theme/*"
       ],
-      "@screens/*": [
-        "./src/screens/*"
+      "@utils/*": [
+        "./src/utils/*"
       ],
-
     }
   }
 }
