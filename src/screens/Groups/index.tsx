@@ -6,6 +6,7 @@ import { GroupCard } from '@components/GroupCard';
 import { useState } from 'react';
 import { FlatList } from 'react-native';
 import { EmptyCard } from '@components/EmptyCard';
+import { Button } from '@components/Button';
 
 export function Groups() {
   const [groups, setGroups] = useState([]);
@@ -22,6 +23,9 @@ export function Groups() {
           <GroupCard title={item} />)
         }
         ListEmptyComponent={() => (<EmptyCard menssage="Lista de grupos vazia, que tal cadastrar um novo grupo?" />)}
+      />
+      <Button 
+        title="Criar nova turma"
       />
     </Container>
   );
