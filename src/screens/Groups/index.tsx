@@ -5,22 +5,24 @@ import { TitleDefault } from '@components/TitleDefault';
 import { GroupCard } from '@components/GroupCard';
 import { useState } from 'react';
 import { FlatList } from 'react-native';
+import { EmptyCard } from '@components/EmptyCard';
 
 export function Groups() {
-  const [groups, setGroups] = useState(['Grupo Escape From Tarkov', 'Grupo Helldivers', 'Grupo GTA']);
+  const [groups, setGroups] = useState([]);
 
   return (
     <Container>
       <Header />
       <TitleDefault title="Grupo" subtitle="Jogue com seus colegas" />
       <FlatList
+        contentContainerStyle={groups.length === 0 && { flex: 1 }}
         data={groups}
         keyExtractor={item => item}
         renderItem={({ item }) => (
           <GroupCard title={item} />)
         }
+        ListEmptyComponent={() => (<EmptyCard menssage="Lista de grupos vazia, que tal cadastrar um novo grupo?" />)}
       />
-      {/* <GroupCard  title='Grupo 1'/> */}
     </Container>
   );
 }
