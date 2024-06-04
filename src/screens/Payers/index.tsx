@@ -7,6 +7,8 @@ import Filter from "@components/Filter"
 import { FlatList } from "react-native"
 import { useState } from "react"
 import { PlayersCard } from "@components/PlayersCard"
+import { EmptyCard } from "@components/EmptyCard"
+import { Button } from "@components/Button"
 
 
 export function Payers() {
@@ -32,14 +34,21 @@ export function Payers() {
         />
         <NumberPlayers>{players.length}</NumberPlayers>
       </HeaderList>
-
-      <FlatList 
+      <FlatList
         data={players}
         keyExtractor={item => item}
-        renderItem={({item}) => (
-          <PlayersCard name={item} />
+        renderItem={({ item }) => (
+          <PlayersCard name={item} onRemove={() => { }} />
         )}
+        ListEmptyComponent={() => (
+          <EmptyCard
+            menssage="Não a players no grupo!"
+          />)}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={[{paddingBottom: 100 }, players.length === 0 && {flex: 1}]}
       />
+
+      <Button title="Remover Turma" type="SECONDARY" />
 
     </Container>
   )
