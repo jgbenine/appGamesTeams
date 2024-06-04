@@ -3,6 +3,7 @@ import { Container, Form } from "./styles"
 import { TitleDefault } from "@components/TitleDefault"
 import { ButtonIcon } from "@components/ButtonIcon"
 import { Input } from "@components/InputDefault"
+import Filter from "@components/Filter"
 
 
 export function Payers() {
@@ -14,6 +15,7 @@ export function Payers() {
         <Input placeholder="Nome do player" autoCorrect={false} />
         <ButtonIcon icon="add" />
       </Form>
+      <Filter title="Time A" isActive />
     </Container>
   )
 }
