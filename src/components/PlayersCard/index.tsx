@@ -10,7 +10,7 @@ export function PlayersCard({name, onRemove, ...rest}: Props) {
     <Container>
       <Icon name='person' />
       <Name>{name}</Name>
-      <ButtonIcon icon="close" type="SECONDARY" onPress={() => {}}/>
+      <ButtonIcon icon="close" type="SECONDARY" onPress={onRemove}/>
     </Container>
   )
 }
