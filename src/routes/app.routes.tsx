@@ -13,7 +13,7 @@ export function AppRoutes() {
         component={Groups}
       />
       <Screen
-        name="newGroup"
+        name="new"
         component={NewGroup}
       />
       <Screen
