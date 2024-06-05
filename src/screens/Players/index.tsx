@@ -1,4 +1,5 @@
 import Filter from "@components/Filter"
+import { useRoute } from "@react-navigation/native"
 import { Header } from "@components/Header"
 import { Container, Form, HeaderList, NumberPlayers } from "./styles"
 import { TitleDefault } from "@components/TitleDefault"
@@ -11,14 +12,21 @@ import { EmptyCard } from "@components/EmptyCard"
 import { Button } from "@components/Button"
 
 
+type RouteParams = {
+  group: string;
+}
+
 export function Players() {
   const [team, setTeam] = useState('Time A');
   const [players, setPlayers] = useState(["Israel", "Isaac"])
 
+  const route = useRoute();
+  const {group} = route.params as RouteParams;
+
   return (
     <Container>
       <Header showBackButton />
-      <TitleDefault title="Nome do grupo" subtitle="Adicione um grupo e separe os times" />
+      <TitleDefault title={group} subtitle="Adicione um grupo e separe os times" />
       <Form>
         <Input placeholder="Nome do player" autoCorrect={false} />
         <ButtonIcon icon="add" />
