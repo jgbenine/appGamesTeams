@@ -7,9 +7,15 @@ import { useState } from 'react';
 import { FlatList } from 'react-native';
 import { EmptyCard } from '@components/EmptyCard';
 import { Button } from '@components/Button';
+import {useNavigation} from '@react-navigation/native'
 
 export function Groups() {
   const [groups, setGroups] = useState([]);
+  const navigation = useNavigation();
+
+  function handleNewGroup(){
+    navigation.navigate('new')
+  }
 
   return (
     <Container>
@@ -25,7 +31,8 @@ export function Groups() {
         ListEmptyComponent={() => (<EmptyCard menssage="Lista de grupos vazia, que tal cadastrar um novo grupo?" />)}
       />
       <Button 
-        title="Criar nova turma"
+        title="Criar novo grupo"
+        onPress={handleNewGroup}
       />
     </Container>
   );

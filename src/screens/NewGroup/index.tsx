@@ -3,8 +3,15 @@ import { Container, Content, Icon } from "./styles";
 import { TitleDefault } from "@components/TitleDefault";
 import { Button } from "@components/Button";
 import { Input } from "@components/InputDefault";
+import { useNavigation } from "@react-navigation/native";
 
 export function NewGroup() {
+
+  const navigation = useNavigation()
+  function handleNewCreateGroup(){
+    navigation.navigate("players", {group: "Escape from tarkov"});
+  }
+
   return (
     <Container>
       <Header showBackButton />
@@ -12,7 +19,7 @@ export function NewGroup() {
         <Icon />
         <TitleDefault title="Novo Grupo" subtitle="crie um grupo para adicionar as pessoas" />
         <Input placeholder="Nome do grupo"/>
-        <Button title="Criar grupo" style={{marginTop: 20}} />
+        <Button title="Criar grupo" style={{marginTop: 20}} onPress={handleNewCreateGroup} />
       </Content>
     </Container>
   )

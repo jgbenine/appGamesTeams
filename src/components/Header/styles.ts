@@ -1,4 +1,4 @@
-import { CaretLeft } from "phosphor-react-native";
+import { HouseLine } from "phosphor-react-native";
 import styled from "styled-components/native";
 
 
@@ -18,7 +18,7 @@ export const Container = styled.View`
    flex: 1;
   `
 
-  export const BackIcon = styled(CaretLeft).attrs(({theme })=>({
+  export const BackIcon = styled(HouseLine).attrs(({theme })=>({
     size: 32,
     color: theme.COLORS.GRAY_500
   }))`
