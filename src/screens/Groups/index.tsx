@@ -3,19 +3,33 @@ import { Header } from '@components/Header';
 import { Container } from './styles'
 import { TitleDefault } from '@components/TitleDefault';
 import { GroupCard } from '@components/GroupCard';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { FlatList } from 'react-native';
 import { EmptyCard } from '@components/EmptyCard';
 import { Button } from '@components/Button';
-import {useNavigation} from '@react-navigation/native'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
+import { groupsGetAll } from '@storage/group/groupsGetAll';
 
 export function Groups() {
-  const [groups, setGroups] = useState([]);
+  const [groups, setGroups] = useState<string[]>([]);
   const navigation = useNavigation();
 
-  function handleNewGroup(){
+  function handleNewGroup() {
     navigation.navigate('new')
   }
+
+  async function fetchGroups() {
+    try {
+      const data = await groupsGetAll();
+      setGroups(data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  useFocusEffect(useCallback(() => {
+    fetchGroups();
+  }, []))
 
   return (
     <Container>
@@ -30,7 +44,7 @@ export function Groups() {
         }
         ListEmptyComponent={() => (<EmptyCard menssage="Lista de grupos vazia, que tal cadastrar um novo grupo?" />)}
       />
-      <Button 
+      <Button
         title="Criar novo grupo"
         onPress={handleNewGroup}
       />
