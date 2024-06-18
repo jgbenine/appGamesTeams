@@ -6,13 +6,15 @@ import { TitleDefault } from "@components/TitleDefault"
 import { ButtonIcon } from "@components/ButtonIcon"
 import { Input } from "@components/InputDefault"
 import { Alert, FlatList } from "react-native"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { PlayersCard } from "@components/PlayersCard"
 import { EmptyCard } from "@components/EmptyCard"
 import { Button } from "@components/Button"
 import { AppError } from "@utils/appError"
 import { playerAddByGroup } from "@storage/player/playerAddByGroup"
 import { playersGetByGroup } from "@storage/player/playerGetByGroup"
+import { playersGetByGroupAndTeam } from "@storage/player/playerGetByGroupAndTeam"
+import { PlayersTypeDTO } from "@storage/player/PlayerTypes"
 
 
 type RouteParams = {
@@ -22,8 +24,7 @@ type RouteParams = {
 export function Players() {
   const [newPlayerName, setNewPlayerName] = useState('');
   const [team, setTeam] = useState('Time A');
-  const [players, setPlayers] = useState([])
-
+  const [players, setPlayers] = useState<PlayersTypeDTO[]>([])
   const route = useRoute();
   const {group} = route.params as RouteParams;
 
@@ -38,8 +39,9 @@ export function Players() {
 
     try{
       await playerAddByGroup(newPlayer, group);
-      const players = await playersGetByGroup(group);
-      console.log(players);
+      fetchPlayersByTeam();
+      // const players = await playersGetByGroup(group);
+      // console.log(players);
     }catch(error){
       if(error instanceof AppError){
         Alert.alert('Novo player', error.message);
@@ -50,6 +52,20 @@ export function Players() {
     }
 
   }
+
+  async function fetchPlayersByTeam(){
+    try {
+      const playersByTeam = await playersGetByGroupAndTeam(group, team);
+      setPlayers(playersByTeam);
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Novo player', 'Erro ao buscar os players.');
+    }
+  }
+
+  useEffect(() => {
+    fetchPlayersByTeam();
+  }, [team]);
 
   return (
     <Container>
@@ -72,9 +88,9 @@ export function Players() {
       </HeaderList>
       <FlatList
         data={players}
-        keyExtractor={item => item}
+        keyExtractor={item => item.name}
         renderItem={({ item }) => (
-          <PlayersCard name={item} onRemove={() => { }} />
+          <PlayersCard name={item.name} onRemove={() => { }} />
         )}
         ListEmptyComponent={() => (
           <EmptyCard
