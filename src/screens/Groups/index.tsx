@@ -27,6 +27,10 @@ export function Groups() {
     }
   }
 
+  function handleOpenGroup(group: string) {
+    navigation.navigate('players', {group})
+  }
+
   useFocusEffect(useCallback(() => {
     fetchGroups();
   }, []))
@@ -40,8 +44,8 @@ export function Groups() {
         data={groups}
         keyExtractor={item => item}
         renderItem={({ item }) => (
-          <GroupCard title={item} />)
-        }
+          <GroupCard title={item} onPress={()=> handleOpenGroup(item)} />
+        )}
         ListEmptyComponent={() => (<EmptyCard menssage="Lista de grupos vazia, que tal cadastrar um novo grupo?" />)}
       />
       <Button
