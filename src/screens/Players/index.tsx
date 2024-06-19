@@ -15,6 +15,7 @@ import { playerAddByGroup } from "@storage/player/playerAddByGroup"
 import { playersGetByGroup } from "@storage/player/playerGetByGroup"
 import { playersGetByGroupAndTeam } from "@storage/player/playerGetByGroupAndTeam"
 import { PlayersTypeDTO } from "@storage/player/PlayerTypes"
+import { playerRemoveByGroup } from "@storage/player/playerRemoveByGroup"
 
 
 type RouteParams = {
@@ -65,6 +66,16 @@ export function Players() {
     }
   }
 
+  async function handleRemovePlayer(playerName: string) {
+    try {
+      await playerRemoveByGroup(playerName, group);
+      fetchPlayersByTeam();
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Remover Player', 'Erro ao remover player.');
+    }
+  }
+
   useEffect(() => {
     fetchPlayersByTeam();
   }, [team]);
@@ -76,12 +87,12 @@ export function Players() {
       <Form>
         <Input placeholder="Nome do player"
           autoCorrect={false}
-          onChangeText={setNewPlayerName} 
-          value={newPlayerName} 
+          onChangeText={setNewPlayerName}
+          value={newPlayerName}
           inputRef={newPlayerInputRef}
           onSubmitEditing={handleAddPlayer}
           returnKeyType="done"
-          />
+        />
         <ButtonIcon icon="add" onPress={handleAddPlayer} />
       </Form>
       <HeaderList>
@@ -99,7 +110,7 @@ export function Players() {
         data={players}
         keyExtractor={item => item.name}
         renderItem={({ item }) => (
-          <PlayersCard name={item.name} onRemove={() => { }} />
+          <PlayersCard name={item.name} onRemove={() => {handleRemovePlayer(item.name)}} />
         )}
         ListEmptyComponent={() => (
           <EmptyCard
