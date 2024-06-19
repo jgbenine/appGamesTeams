@@ -1,5 +1,5 @@
 import Filter from "@components/Filter"
-import { useRoute } from "@react-navigation/native"
+import { useNavigation, useRoute } from "@react-navigation/native"
 import { Header } from "@components/Header"
 import { Container, Form, HeaderList, NumberPlayers } from "./styles"
 import { TitleDefault } from "@components/TitleDefault"
@@ -16,6 +16,7 @@ import { playersGetByGroup } from "@storage/player/playerGetByGroup"
 import { playersGetByGroupAndTeam } from "@storage/player/playerGetByGroupAndTeam"
 import { PlayersTypeDTO } from "@storage/player/PlayerTypes"
 import { playerRemoveByGroup } from "@storage/player/playerRemoveByGroup"
+import { groupRemoveByName } from "@storage/group/groupRemoveByName"
 
 
 type RouteParams = {
@@ -29,6 +30,7 @@ export function Players() {
   const route = useRoute();
   const { group } = route.params as RouteParams;
   const newPlayerInputRef = useRef<TextInput>(null);
+  const navigation = useNavigation();
 
   async function handleAddPlayer() {
     if (newPlayerName.trim().length === 0) {
@@ -76,6 +78,25 @@ export function Players() {
     }
   }
 
+  async function groupRemove() {
+    try {
+      await groupRemoveByName(group);
+      navigation.navigate('groups');
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Remover Grupo', 'Erro ao remover grupo.');
+    }
+  }
+
+  async function handleGroupRemove() {
+    Alert.alert('Remover', 'Deseja remover o grupo',
+      [
+        { text: 'Não', style: 'cancel' },
+        { text: 'Sim', onPress: () => groupRemove()}
+      ])
+
+  }
+
   useEffect(() => {
     fetchPlayersByTeam();
   }, [team]);
@@ -110,7 +131,7 @@ export function Players() {
         data={players}
         keyExtractor={item => item.name}
         renderItem={({ item }) => (
-          <PlayersCard name={item.name} onRemove={() => {handleRemovePlayer(item.name)}} />
+          <PlayersCard name={item.name} onRemove={() => { handleRemovePlayer(item.name) }} />
         )}
         ListEmptyComponent={() => (
           <EmptyCard
@@ -119,7 +140,7 @@ export function Players() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[{ paddingBottom: 100 }, players.length === 0 && { flex: 1 }]}
       />
-      <Button title="Remover Turma" type="SECONDARY" />
+      <Button title="Remover Grupo" type="SECONDARY" onPress={handleGroupRemove} />
     </Container>
   )
 }
