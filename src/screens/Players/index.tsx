@@ -5,8 +5,8 @@ import { Container, Form, HeaderList, NumberPlayers } from "./styles"
 import { TitleDefault } from "@components/TitleDefault"
 import { ButtonIcon } from "@components/ButtonIcon"
 import { Input } from "@components/InputDefault"
-import { Alert, FlatList } from "react-native"
-import { useEffect, useState } from "react"
+import { Alert, FlatList, TextInput } from "react-native"
+import { useEffect, useState, useRef } from "react"
 import { PlayersCard } from "@components/PlayersCard"
 import { EmptyCard } from "@components/EmptyCard"
 import { Button } from "@components/Button"
@@ -26,10 +26,11 @@ export function Players() {
   const [team, setTeam] = useState('Time A');
   const [players, setPlayers] = useState<PlayersTypeDTO[]>([])
   const route = useRoute();
-  const {group} = route.params as RouteParams;
+  const { group } = route.params as RouteParams;
+  const newPlayerInputRef = useRef<TextInput>(null);
 
-  async function handleAddPlayer(){
-    if(newPlayerName.trim().length === 0){
+  async function handleAddPlayer() {
+    if (newPlayerName.trim().length === 0) {
       return Alert.alert('Novo player', 'Informe o nome do player para adiciona-lo.')
     }
     const newPlayer = {
@@ -37,15 +38,16 @@ export function Players() {
       team,
     }
 
-    try{
+    try {
       await playerAddByGroup(newPlayer, group);
+
+      newPlayerInputRef.current?.blur();
+      setNewPlayerName('');
       fetchPlayersByTeam();
-      // const players = await playersGetByGroup(group);
-      // console.log(players);
-    }catch(error){
-      if(error instanceof AppError){
+    } catch (error) {
+      if (error instanceof AppError) {
         Alert.alert('Novo player', error.message);
-      }else{
+      } else {
         console.log(error);
         Alert.alert('Novo player', 'Erro ao adicionar player.');
       }
@@ -53,7 +55,7 @@ export function Players() {
 
   }
 
-  async function fetchPlayersByTeam(){
+  async function fetchPlayersByTeam() {
     try {
       const playersByTeam = await playersGetByGroupAndTeam(group, team);
       setPlayers(playersByTeam);
@@ -72,7 +74,14 @@ export function Players() {
       <Header showBackButton />
       <TitleDefault title={group} subtitle="Adicione um grupo e separe os times" />
       <Form>
-        <Input placeholder="Nome do player" autoCorrect={false} onChangeText={setNewPlayerName} />
+        <Input placeholder="Nome do player"
+          autoCorrect={false}
+          onChangeText={setNewPlayerName} 
+          value={newPlayerName} 
+          inputRef={newPlayerInputRef}
+          onSubmitEditing={handleAddPlayer}
+          returnKeyType="done"
+          />
         <ButtonIcon icon="add" onPress={handleAddPlayer} />
       </Form>
       <HeaderList>
@@ -97,7 +106,7 @@ export function Players() {
             menssage="Não a players no grupo!"
           />)}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={[{paddingBottom: 100 }, players.length === 0 && {flex: 1}]}
+        contentContainerStyle={[{ paddingBottom: 100 }, players.length === 0 && { flex: 1 }]}
       />
       <Button title="Remover Turma" type="SECONDARY" />
     </Container>
