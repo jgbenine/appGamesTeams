@@ -20,12 +20,12 @@ export function NewGroup() {
       }
       await groupCreate(group);
       navigation.navigate("players", { group });
-    } catch (err) {
-      if (err instanceof AppError) {
-        Alert.alert('Novo grupo', err.message);
+    } catch (error) {
+      if (error instanceof AppError) {
+        Alert.alert('Novo grupo', error.message);
       } else {
         Alert.alert('Não foi possivel criar um novo grupo');
-        console.log(err);
+        console.error(error);
       }
     }
   }

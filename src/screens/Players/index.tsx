@@ -17,6 +17,7 @@ import { playersGetByGroupAndTeam } from "@storage/player/playerGetByGroupAndTea
 import { PlayersTypeDTO } from "@storage/player/PlayerTypes"
 import { playerRemoveByGroup } from "@storage/player/playerRemoveByGroup"
 import { groupRemoveByName } from "@storage/group/groupRemoveByName"
+import { Loading } from "@components/Loading"
 
 
 type RouteParams = {
@@ -24,6 +25,7 @@ type RouteParams = {
 }
 
 export function Players() {
+  const [isLoading, setIsLoading] = useState(true);
   const [newPlayerName, setNewPlayerName] = useState('');
   const [team, setTeam] = useState('Time A');
   const [players, setPlayers] = useState<PlayersTypeDTO[]>([])
@@ -43,7 +45,6 @@ export function Players() {
 
     try {
       await playerAddByGroup(newPlayer, group);
-
       newPlayerInputRef.current?.blur();
       setNewPlayerName('');
       fetchPlayersByTeam();
@@ -51,8 +52,8 @@ export function Players() {
       if (error instanceof AppError) {
         Alert.alert('Novo player', error.message);
       } else {
-        console.log(error);
         Alert.alert('Novo player', 'Erro ao adicionar player.');
+        console.error(error);
       }
     }
 
@@ -60,11 +61,14 @@ export function Players() {
 
   async function fetchPlayersByTeam() {
     try {
+      setIsLoading(true);
       const playersByTeam = await playersGetByGroupAndTeam(group, team);
       setPlayers(playersByTeam);
     } catch (error) {
-      console.log(error);
       Alert.alert('Novo player', 'Erro ao buscar os players.');
+      console.error(error);
+    }finally{
+      setIsLoading(false);
     }
   }
 
@@ -73,8 +77,8 @@ export function Players() {
       await playerRemoveByGroup(playerName, group);
       fetchPlayersByTeam();
     } catch (error) {
-      console.log(error);
       Alert.alert('Remover Player', 'Erro ao remover player.');
+      console.error(error);
     }
   }
 
@@ -83,8 +87,8 @@ export function Players() {
       await groupRemoveByName(group);
       navigation.navigate('groups');
     } catch (error) {
-      console.log(error);
       Alert.alert('Remover Grupo', 'Erro ao remover grupo.');
+      console.error(error);
     }
   }
 
@@ -92,7 +96,7 @@ export function Players() {
     Alert.alert('Remover', 'Deseja remover o grupo',
       [
         { text: 'Não', style: 'cancel' },
-        { text: 'Sim', onPress: () => groupRemove()}
+        { text: 'Sim', onPress: () => groupRemove() }
       ])
 
   }
@@ -127,19 +131,22 @@ export function Players() {
         />
         <NumberPlayers>{players.length}</NumberPlayers>
       </HeaderList>
-      <FlatList
-        data={players}
-        keyExtractor={item => item.name}
-        renderItem={({ item }) => (
-          <PlayersCard name={item.name} onRemove={() => { handleRemovePlayer(item.name) }} />
-        )}
-        ListEmptyComponent={() => (
-          <EmptyCard
-            menssage="Não a players no grupo!"
-          />)}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={[{ paddingBottom: 100 }, players.length === 0 && { flex: 1 }]}
-      />
+      {
+        isLoading ? <Loading /> : 
+        <FlatList
+          data={players}
+          keyExtractor={item => item.name}
+          renderItem={({ item }) => (
+            <PlayersCard name={item.name} onRemove={() => { handleRemovePlayer(item.name) }} />
+          )}
+          ListEmptyComponent={() => (
+            <EmptyCard
+              menssage="Não a players no grupo!"
+            />)}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={[{ paddingBottom: 100 }, players.length === 0 && { flex: 1 }]}
+        />
+      }
       <Button title="Remover Grupo" type="SECONDARY" onPress={handleGroupRemove} />
     </Container>
   )
